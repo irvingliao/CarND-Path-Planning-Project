@@ -18,7 +18,7 @@ Self-Driving Car Engineer Nanodegree Program
 The track waypoints are from `highway_map.csv`, which are used to generate accurate result of `getXY` & `getFrenet` methods.
 
 ### Sensor Fusion
-Refer to `Planner::checkSurrounding in planner.cpp`
+Refer to `Planner::checkSurrounding in planner.cpp`  
 Use the data from Sensor Fusion to build the `Vehicle` objects of Ego Car & other cars detected around ego car.  
 Here in order to simplify the implementation, I only consider the cars which is closest in each position: 
  - **Car at Front**
@@ -28,20 +28,20 @@ Here in order to simplify the implementation, I only consider the cars which is 
  - **Car at Back in Right lane**
 
 ### Predict the Cost
-`Refer to Vehicle::calculateCost in vehicle.cpp`
+`Refer to Vehicle::calculateCost in vehicle.cpp`  
 Setup some rules of how it cost to (**change the lane** / **keep lane**) by considering nearby cars's speed & position.  
 For example, if **Car at Front** has slower speed than Ego car, it will add a cost of `0.2`. If **Car at Front** is with 30m, will add a cost of `0.4`. So if the **Car at Front** is slower & < 30m, it will cost 0.6 to keep in lane.  
 If **Car at Front in Right lane** is between the range of 30m ahead to 15m behind of Ego car, it will consider to be unable to chagne, and set the cost to `10`.  
 At the end of Prediction step, we select the action have minimum cost between **Keep Lane**, **Change to Left**, **Change to Right**.
 
 ### Behavior
-`Refer to Vehicle::decideAction in vehicle.cpp`
+`Refer to Vehicle::decideAction in vehicle.cpp`  
 After get the action we'll gonna to take, we'll want to further specify the behavior we'll to in action.  
 **Keep Lane** will have **SLOW** & **NORMAL** status, based on the speed and position of **Car at Front**.  
 And we also want to make sure we are not break the speed limit.
 
 ### Trajestory
-`Refer to Planner::path() in planner.cpp`
+`Refer to Planner::path() in planner.cpp`  
 The trajectory generation part which is the most difficult is covered as part of the project walk-through by Aaron Brown and David Silver [LINK](https://www.youtube.com/watch?v=7sI3VHFPP0w). In video they recommend to use the open source [spline](https://kluge.in-chemnitz.de/opensource/spline/) to generate a Quintic Polynomial which help minimize jerk while accelerating, decelerating and changing lanes.  
 The summary of operations is as below,
 
