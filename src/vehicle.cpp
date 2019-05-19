@@ -196,9 +196,6 @@ void Vehicle::decideAction(double vel, double max_speed, double acceleration, Ve
   switch (status) {
     case NORMAL:
       if (ref_vel < max_speed) {
-        if (car_front.isEgoCar) {
-          ref_vel += 0.25*acceleration;
-        }
         ref_vel += acceleration;
       } else {
         ref_vel = max_speed;
@@ -207,15 +204,15 @@ void Vehicle::decideAction(double vel, double max_speed, double acceleration, Ve
 
     case SLOW:
       if (ref_vel > car_front.speed/MPH_TO_MS) {
-        double factor = 1;
-        if ((car_front.s - s) < 30) {
-          factor += 0.25;
-        }
-        ref_vel -= factor*acceleration;
-      } else if ((car_front.s - s) < 30) {
         ref_vel -= acceleration;
+      } else if ((car_front.s - s) < 30) {
+        ref_vel -= 0.5*acceleration;
       } else {
         ref_vel += 0.5*acceleration;
+      }
+
+      if (ref_vel < 0) {
+        ref_vel = acceleration;
       }
       break;
 

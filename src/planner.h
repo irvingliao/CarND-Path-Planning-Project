@@ -23,7 +23,7 @@ const double SAFE_DISTANCE = 50;
 const double TRACK_LENGTH_M = 6945.554;
 const double NUMBER_OF_LANES = 3;
 
-const double ACCELERATION = 0.35;
+const double ACCELERATION = 0.25;
 
 class Planner {
  public:
