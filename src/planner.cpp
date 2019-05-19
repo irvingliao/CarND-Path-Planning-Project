@@ -50,7 +50,6 @@ void Planner::checkSurrounding(Vehicle &car, int prev_size, double dt) {
     return;
   }
 
-  // Predict car s position after executing previous trajectory.
   double check_car_s = car.s;
   // check_car_s += static_cast<double>(prev_size * dt * car.speed);
 
@@ -126,6 +125,10 @@ json Planner::path() {
   double ref_x = ego.x;
   double ref_y = ego.y;
   double ref_yaw = ego.yaw_rad;
+
+  /*
+   Generate Trajectory
+   */
 
   if (prev_size < 2) {
     double prev_car_x = ego.x - cos(ego.yaw);

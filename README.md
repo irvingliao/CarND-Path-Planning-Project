@@ -1,6 +1,64 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
-   
+
+[//]: # (Image References)
+
+[image1]: ./explain.png "Explain"
+
+## Project Rubric & Our Goal
+- The car is able to drive at least 4.32 miles without incident.
+- The car drives according to the speed limit.
+- Max Acceleration (10 m/s^2) and Jerk (10 m/s^3) are not Exceeded.
+- Car does not have collisions.
+- The car stays in its lane, except for the time between changing lanes.
+- The car is able to change lanes
+
+## Implementation Detail
+### Waypoints
+The track waypoints are from `highway_map.csv`, which are used to generate accurate result of `getXY` & `getFrenet` methods.
+
+### Sensor Fusion
+Refer to `Planner::checkSurrounding in planner.cpp`
+Use the data from Sensor Fusion to build the `Vehicle` objects of Ego Car & other cars detected around ego car.  
+Here in order to simplify the implementation, I only consider the cars which is closest in each position: 
+ - **Car at Front**
+ - **Car at Front in Left lane**
+ - **Car at Front in Right lane**
+ - **Car at Back in Left lane** 
+ - **Car at Back in Right lane**
+
+### Predict the Cost
+`Refer to Vehicle::calculateCost in vehicle.cpp`
+Setup some rules of how it cost to (**change the lane** / **keep lane**) by considering nearby cars's speed & position.  
+For example, if **Car at Front** has slower speed than Ego car, it will add a cost of `0.2`. If **Car at Front** is with 30m, will add a cost of `0.4`. So if the **Car at Front** is slower & < 30m, it will cost 0.6 to keep in lane.  
+If **Car at Front in Right lane** is between the range of 30m ahead to 15m behind of Ego car, it will consider to be unable to chagne, and set the cost to `10`.  
+At the end of Prediction step, we select the action have minimum cost between **Keep Lane**, **Change to Left**, **Change to Right**.
+
+### Behavior
+`Refer to Vehicle::decideAction in vehicle.cpp`
+After get the action we'll gonna to take, we'll want to further specify the behavior we'll to in action.  
+**Keep Lane** will have **SLOW** & **NORMAL** status, based on the speed and position of **Car at Front**.  
+And we also want to make sure we are not break the speed limit.
+
+### Trajestory
+`Refer to Planner::path() in planner.cpp`
+The trajectory generation part which is the most difficult is covered as part of the project walk-through by Aaron Brown and David Silver [LINK](https://www.youtube.com/watch?v=7sI3VHFPP0w). In video they recommend to use the open source [spline](https://kluge.in-chemnitz.de/opensource/spline/) to generate a Quintic Polynomial which help minimize jerk while accelerating, decelerating and changing lanes.  
+The summary of operations is as below,
+
+1. Take the top two points from the previous trajectory in global X,Y coordinates.
+2. Project the points ahead in 30m, 60m and 90m spaces from car’s current position. Convert from Fernet (car_s, car_d) to Global XY.
+3. Convert car’s global XY coordinates to local XY co-ordinates. This helps simplify math a lot.
+4. This gives 5 reference points which can be supplied to tk:spline() function to return a 5th degree polynomial.
+5. With this polynomial generate new points in local XY co-ordinates. The Y values on the spline can simply be read from corresponding X values on the X-axis as shown.
+6. Append the points to the previous trajectory after converting back to Global XY co-ordinates.
+
+![alt text][image1]
+
+## Result
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/dFDW-YsKuU0/0.jpg)](https://www.youtube.com/watch?v=dFDW-YsKuU0)
+
+---
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
 

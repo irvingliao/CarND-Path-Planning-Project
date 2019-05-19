@@ -47,6 +47,10 @@ Vehicle::Vehicle(json &j, bool isEgo) {
   }
 }
 
+/*
+ Prediction 
+ Predict the cost of change lane behavior based on the other nearby cors data from sensor fusion.
+ */
 void Vehicle::calculateCost(Vehicle &car_front,
   Vehicle &car_front_l, Vehicle &car_rear_l,
   Vehicle &car_front_r, Vehicle &car_rear_r) {
@@ -182,6 +186,10 @@ void Vehicle::calculateCost(Vehicle &car_front,
   }
 }
 
+/*
+ Behavior
+ Base on the car status and react with correspond action.
+ */
 void Vehicle::decideAction(double vel, double max_speed, double acceleration, Vehicle &car_front) {
   ref_vel = vel;
 
